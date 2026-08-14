@@ -199,3 +199,27 @@ test('mermaid command registers and answers without a session', async () => {
   const result = await cmd.handler({ agent: null })
   assert.equal(result.kind, 'error')
 })
+
+test('mermaid command renders the last assistant message into its own turn', async () => {
+  const ctx = fakeCtx()
+  apply(ctx)
+  const cmd = ctx.commands.registered.find((c) => c.name === 'mermaid')
+  const events = [
+    { type: 'assistant/message', data: { turn: 1, step: 1, message: { content: [{ type: 'text', text: 'no mermaid here' }] } } },
+    { type: 'assistant/message', data: { turn: 2, step: 1, message: { content: [{ type: 'text', text: '```mermaid\ngraph TD\n  A --> B\n```' }] } } },
+  ]
+  const result = await cmd.handler({ agent: { session: { id: 'sess-cmd', events } } })
+  assert.equal(result.kind, 'success')
+
+  const route = routeFor(ctx, '/dsh-mermaid/api')
+  const { req, res, status, body } = post(route.handler, { session: 'sess-cmd', turn: 2 })
+  await route.handler(req, res)
+  assert.equal(status(), 200)
+  const results = body().value
+  assert.equal(results.length, 1)
+  assert.match(results[0].svg, /<svg/)
+  // the earlier turn rendered nothing
+  const earlier = post(route.handler, { session: 'sess-cmd', turn: 1 })
+  await route.handler(earlier.req, earlier.res)
+  assert.deepEqual(earlier.body().value, [])
+})

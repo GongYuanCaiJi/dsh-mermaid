@@ -20,22 +20,28 @@ This package is a port of `pi-mermaid`. The upstream source is used under the MI
 There is no byte-identical file: upstream `index.ts` is a Pi extension
 (`export default (pi)` + TUI renderer), which cannot run inside dsh. What is
 copied unchanged is the **pure logic** — constants, regexes, limits, and the
-following functions, line-for-line from upstream `index.ts`:
+following functions, line-for-line from upstream `index.ts`
+(pinned 2026-02-23, pi-mermaid@0.3.0):
 
 - `MERMAID_BLOCK_RE`, `ISSUE_LINE_RE`, `COLLAPSED_LINES`, `MAX_BLOCKS`,
-  `MAX_SOURCE_LINES`, `MAX_SOURCE_CHARS`, `MAX_SEEN_ISSUES`, `MAX_SVG_CACHE`
-  (upstream `MAX_ASCII_CACHE`), `SUPPORTED_TYPES`, `SUPPORTED_TYPE_LABEL`
+  `MAX_SOURCE_LINES`, `MAX_SOURCE_CHARS`, `MAX_SEEN_ISSUES`, `SUPPORTED_TYPES`,
+  `SUPPORTED_TYPE_LABEL`
 - `isDomPurifyError`, `getMermaidParser`, `normalizeMermaidSource`,
   `formatIssueLines`, `buildContextContent`, `extractText`,
   `extractMermaidBlocks`, `getMermaidTypeToken`, `getSupportedMermaidType`,
-  `hashMermaid`, `splitIssuesFromContent`, `getLastAssistantText`,
-  `processBlock`
+  `hashMermaid`, `splitIssuesFromContent`, `getLastAssistantText`
 
-The adaptation surface is deliberately small and documented in the README:
-dsh entry shape (`{ name, apply }`), `ctx.on('session/event')` instead of
-`pi.on('input' | 'agent_end')`, `renderMermaidSVG` instead of
-`renderMermaidAscii` (same `beautiful-mermaid` package, dsh has a web client
-not a TUI), and the TUI renderer replaced by a web client slot.
+`processBlock` is **adapted, not verbatim**: the upstream function renders
+four width-tuned ASCII variants and picks one against a terminal width; dsh
+has no TUI, so the variant pipeline was dropped and the single
+`renderMermaidSVG` call replaces it (same `beautiful-mermaid` package). The
+cache helpers (`getCachedVariant`/`setCachedVariant`, upstream
+`MAX_ASCII_CACHE` → `MAX_SVG_CACHE`) keep the upstream LRU shape but cache
+the single SVG per diagram hash instead of variant objects. The rest of the
+adaptation surface is documented in the README: dsh entry shape
+(`{ name, apply }`), `ctx.on('session/event')` instead of
+`pi.on('input' | 'agent_end')`, and the TUI renderer replaced by a web
+client slot.
 
 ### Verifying the upstream pin yourself
 

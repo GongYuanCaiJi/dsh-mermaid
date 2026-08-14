@@ -1,4 +1,4 @@
-// dsh-mermaid — Mermaid 流程圖渲染 plugin for DeepSeek Harness.
+// dsh-mermaid — Mermaid 流程图渲染 plugin for DeepSeek Harness.
 //
 // Port of Gurpartap/pi-mermaid@0.3.0 (MIT). The ported logic (block
 // extraction, type support, hashing, caching, parser validation, issue
@@ -26,7 +26,6 @@ import { renderMermaidSVG } from 'beautiful-mermaid'
 
 export const name = 'dsh-mermaid'
 
-const MESSAGE_TYPE = 'dsh-mermaid'
 const MERMAID_BLOCK_RE = /```mermaid\s*([\s\S]*?)```/gi
 const ISSUE_LINE_RE = /^\[mermaid:(warning|error)\](?:\[hash:[^\]]+\])?\s*(.*)$/
 const COLLAPSED_LINES = 10
@@ -454,6 +453,9 @@ export function apply(ctx) {
   })
 
   // Manual re-render of the last assistant message (upstream /pi-mermaid).
+  // Upstream's getLastAssistantText walks Pi SessionEntry[] ({type:'message'});
+  // dsh session events use 'assistant/message' with data.turn, so the command
+  // scans the dsh shape directly and keys the store by that message's own turn.
   ctx.inject(['commands'], (cmdCtx) => {
     cmdCtx.commands.register({
       name: 'mermaid',
@@ -461,12 +463,20 @@ export function apply(ctx) {
       handler: async (invocation) => {
         const session = invocation.agent?.session
         if (!session) return { kind: 'error', text: 'No active session' }
-        const text = getLastAssistantText(session.events)
-        if (!text) return { kind: 'error', text: 'No assistant message found' }
-        const results = await renderBlocksFor(session.id, currentTurn, text, {
+        let lastText = null
+        let lastTurn = null
+        for (const event of session.events ?? []) {
+          if (event.type !== 'assistant/message') continue
+          const text = extractText(event.data.message?.content)
+          if (!text.trim()) continue
+          lastText = text
+          lastTurn = event.data.turn
+        }
+        if (lastText === null) return { kind: 'error', text: 'No assistant message found' }
+        const results = await renderBlocksFor(session.id, lastTurn ?? currentTurn, lastText, {
           notify: () => {},
         })
-        store.set(session.id, currentTurn, results)
+        store.set(session.id, lastTurn ?? currentTurn, results)
         if (results.length === 0) return { kind: 'error', text: 'No mermaid blocks found' }
         return { kind: 'success', text: `Rendered ${results.length} mermaid block(s).` }
       },
