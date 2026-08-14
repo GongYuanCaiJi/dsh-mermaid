@@ -1,0 +1,79 @@
+{
+  "name": "dsh-mermaid",
+  "version": "0.3.0",
+  "description": "Mermaid 流程图渲染（移植自 pi-mermaid）",
+  "type": "module",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "src",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run build && node --test \"test/*.test.mjs\"",
+    "prepare": "npm run build",
+    "prepack": "npm run build && node --test \"test/*.test.mjs\"",
+    "prepublishOnly": "npm run prepack"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "mermaid",
+    "svg",
+    "diagram"
+  ],
+  "author": "Gurpartap Singh",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GongYuanCaiJi/dsh-mermaid.git"
+  },
+  "bugs": {
+    "url": "https://github.com/GongYuanCaiJi/dsh-mermaid/issues"
+  },
+  "homepage": "https://github.com/GongYuanCaiJi/dsh-mermaid",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "beautiful-mermaid": "^1.0.0",
+    "mermaid": "^11.0.0"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.0"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-runtime",
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-slots",
+        "@deepseek-ai/dsh-client-ui-conversation"
+      ]
+    }
+  }
+}
