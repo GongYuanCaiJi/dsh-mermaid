@@ -46,13 +46,14 @@ graph TD
 > - GitHub 源码：`dsh plugin add github:GongYuanCaiJi/dsh-mermaid`（需要 allowBuilds 允许 `prepare` 构建）
 
 ```bash
-# 本地路径安装
+# 本地路径安装（装进内置的 web profile，即 dsh 的网页客户端）
 cd dsh-mermaid && npm install
-dsh plugin --profile <你的profile> add ../dsh-mermaid
-dsh --profile <你的profile> web
+dsh plugin --profile web add ../dsh-mermaid
+dsh --profile web
 
 # 或 GitHub 源码安装
-dsh plugin --profile <你的profile> add github:GongYuanCaiJi/dsh-mermaid
+dsh plugin --profile web add github:GongYuanCaiJi/dsh-mermaid
+dsh --profile web
 ```
 
 安装后在 web client 里发送一段包含 ```mermaid 围栏的消息，图就会出现在该轮对话的末尾。
@@ -115,13 +116,14 @@ becomes a real SVG flowchart instead of a code block. `sequenceDiagram`, `classD
 > - GitHub source: `dsh plugin add github:GongYuanCaiJi/dsh-mermaid` (needs allowBuilds so `prepare` can build)
 
 ```bash
-# local path
+# local path (installs into the built-in `web` profile, the dsh web client)
 cd dsh-mermaid && npm install
-dsh plugin --profile <your-profile> add ../dsh-mermaid
-dsh --profile <your-profile> web
+dsh plugin --profile web add ../dsh-mermaid
+dsh --profile web
 
 # or GitHub source
-dsh plugin --profile <your-profile> add github:GongYuanCaiJi/dsh-mermaid
+dsh plugin --profile web add github:GongYuanCaiJi/dsh-mermaid
+dsh --profile web
 ```
 
 After installing, send a message containing a ```mermaid fence in the web client — the diagram appears at the end of that turn.
