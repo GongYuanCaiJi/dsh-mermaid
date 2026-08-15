@@ -5,7 +5,7 @@
 **在 DeepSeek Harness 的 web client 里，把对话中的 ```mermaid 围栏代码渲染成 SVG 流程图。**
 
 [![dsh-plugin](https://img.shields.io/badge/dsh-plugin-6f6bff?logo=terminal&logoColor=white)](https://github.com/topics/dsh-plugin)
-[![license](https://img.shields.io/npm/l/dsh-mermaid.svg)](LICENSE)
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![pi-mermaid upstream](https://img.shields.io/badge/upstream-pi--mermaid-2ea44f)](https://github.com/Gurpartap/pi-mermaid)
 
 [English](#english) · [中文](#中文)
@@ -42,13 +42,13 @@ graph TD
 
 > ⚠️ 尚未发布到 npm。以下二选一：
 >
-> - 本地路径：先 `npm install` 再 `dsh plugin add ./dsh-mermaid`
+> - 本地路径：先 `npm install` 再 `dsh plugin add ../dsh-mermaid`
 > - GitHub 源码：`dsh plugin add github:GongYuanCaiJi/dsh-mermaid`（需要 allowBuilds 允许 `prepare` 构建）
 
 ```bash
 # 本地路径安装
 cd dsh-mermaid && npm install
-dsh plugin --profile <你的profile> add ./dsh-mermaid
+dsh plugin --profile <你的profile> add ../dsh-mermaid
 dsh --profile <你的profile> web
 
 # 或 GitHub 源码安装
@@ -111,13 +111,13 @@ becomes a real SVG flowchart instead of a code block. `sequenceDiagram`, `classD
 
 > ⚠️ Not published to npm yet. Pick one:
 >
-> - Local path: `npm install` first, then `dsh plugin add ./dsh-mermaid`
+> - Local path: `npm install` first, then `dsh plugin add ../dsh-mermaid`
 > - GitHub source: `dsh plugin add github:GongYuanCaiJi/dsh-mermaid` (needs allowBuilds so `prepare` can build)
 
 ```bash
 # local path
 cd dsh-mermaid && npm install
-dsh plugin --profile <your-profile> add ./dsh-mermaid
+dsh plugin --profile <your-profile> add ../dsh-mermaid
 dsh --profile <your-profile> web
 
 # or GitHub source
